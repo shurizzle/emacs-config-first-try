@@ -11,13 +11,13 @@
 (setq make-backup-files nil
       auto-save-default nil
       ring-bell-function 'ignore
-      indent-tabs-mode nil)
-
-(setq magit-last-seen-setup-instructions "1.4.0")
-
-(setq backup-directory-alist `((".*" . ,temporary-file-directory))
+      indent-tabs-mode nil
+      display-line-numbers-type 'relative
+      magit-last-seen-setup-instructions "1.4.0"
+      backup-directory-alist `((".*" . ,temporary-file-directory))
       auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
+(global-display-line-numbers-mode)
 (set-frame-font "monospace 9" nil t)
 
 (defvar bootstrap-version)
@@ -49,15 +49,8 @@
   (use-package-verbose t))
 
 (use-package arc-dark-theme
-  :straight t
   :straight (:host github :repo "cfraz89/arc-dark-theme")
   :config (load-theme 'arc-dark t))
-
-(use-package linum-relative
-  :hook (lsp-mode . linum-relative-mode)
-        (prog-mode . linum-relative-mode)
-        (text-mode . linum-relative-mode)
-  :config (setq linum-relative-backend 'display-line-numbers-mode))
 
 (use-package evil)
 
@@ -135,6 +128,5 @@
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs)
-
 
 (use-package vterm)
