@@ -89,6 +89,13 @@
   :config
   (global-evil-surround-mode 1))
 
+(use-package evil-numbers
+  :ensure t
+  :after evil-leader
+  :config
+  (evil-define-key '(normal visual) 'global (kbd "C-a") 'evil-numbers/inc-at-pt)
+  (evil-define-key '(normal visual) 'global (kbd "C-x") 'evil-numbers/dec-at-pt))
+
 (use-package scala-mode
   :interpreter ("scala3" . scala-mode))
 
