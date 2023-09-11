@@ -78,10 +78,16 @@
   (evil-mode t))
 
 (use-package evil-collection
-  :after evil
+  :after evil-leader
   :config
   (add-to-list 'evil-collection-mode-list 'help)
   (evil-collection-init))
+
+(use-package evil-surround
+  :ensure t
+  :after evil-leader
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package scala-mode
   :interpreter ("scala3" . scala-mode))
