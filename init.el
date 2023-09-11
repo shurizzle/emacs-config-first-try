@@ -63,7 +63,10 @@
   :straight (:host github :repo "cfraz89/arc-dark-theme")
   :config (load-theme 'arc-dark t))
 
-(use-package evil)
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-keybinding nil))
 
 (use-package evil-leader
   :after evil
@@ -73,6 +76,12 @@
   (evil-leader/set-key
     "tb" 'buffer-menu)
   (evil-mode t))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (add-to-list 'evil-collection-mode-list 'help)
+  (evil-collection-init))
 
 (use-package scala-mode
   :interpreter ("scala3" . scala-mode))
