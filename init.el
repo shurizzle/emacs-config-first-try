@@ -52,6 +52,13 @@
   (straight-check-for-modifications 'at-startup)
   (use-package-verbose t))
 
+(use-package which-key
+  :diminish
+  :config
+  (which-key-mode)
+  (setq which-key-idle-delay 0.1)
+  (which-key-setup-minibuffer))
+
 (use-package arc-dark-theme
   :straight (:host github :repo "cfraz89/arc-dark-theme")
   :config (load-theme 'arc-dark t))
