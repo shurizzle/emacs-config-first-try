@@ -71,7 +71,8 @@
 (use-package evil
   :ensure t
   :init
-  (setq evil-want-keybinding nil))
+  (setq evil-want-keybinding nil
+        evil-want-C-u-scroll t))
 
 (use-package evil-leader
   :after evil
