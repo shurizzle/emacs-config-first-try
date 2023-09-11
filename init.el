@@ -71,7 +71,7 @@
   (global-evil-leader-mode)
   (evil-leader/set-leader ",")
   (evil-leader/set-key
-    "b" 'buffer-menu)
+    "tb" 'buffer-menu)
   (evil-mode t))
 
 (use-package scala-mode
