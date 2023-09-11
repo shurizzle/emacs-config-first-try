@@ -1,8 +1,13 @@
+(defconst *is-windows* (eq system-type 'windows-nt))
+(defconst *is-unix* (not *is-windows*))
+(defconst *project-dir* (expand-file-name "~/git"))
+
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (setq use-dialog-box nil
-      inhibit-startup-screen t)
+      inhibit-startup-screen t
+      completion-cycle-threshold t)
 
 (show-paren-mode 1)
 (size-indication-mode 1)
@@ -73,14 +78,15 @@
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader ",")
-  (evil-leader/set-key
-    "tb" 'buffer-menu)
   (evil-mode t))
 
 (use-package evil-collection
   :after evil-leader
+  :custom
+  (evil-collection-setup-minibuffer t)
   :config
   (add-to-list 'evil-collection-mode-list 'help)
+  (add-to-list 'evil-collection-mode-list 'vertico)
   (evil-collection-init))
 
 (use-package evil-surround
@@ -175,5 +181,127 @@
 
 (use-package tree-sitter-langs
   :after tree-sitter)
+
+(defun me/expand-git-project-dirs (root)
+  "Return a list of all project directories 2 levels deep in ROOT.
+
+Given my git projects directory ROOT, with a layout like =git/{hub,lab}/<user>/project=, return a list of 'user' directories that are part of the ROOT."
+  (mapcan #'(lambda (d) (cddr (directory-files d t)))
+          (cddr (directory-files root t))))
+
+(use-package projectile
+  :demand t
+  :custom
+  (projectile-completion-system 'default)
+  (projectile-enable-caching t)
+  (projectile-sort-order 'recently-active)
+  (projectile-indexing-method (if *is-unix* 'hybrid 'native))
+  (projectile-project-search-path `((,*project-dir* . 3)))
+  :config
+  (projectile-mode +1))
+
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  (setq read-extended-command-predicate
+        #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+
+(use-package savehist
+  :demand t
+  :config
+  (savehist-mode))
+
+(use-package vertico
+  :demand t
+  :custom
+  (vertico-resize t)
+  (vertico-cycle t)
+  :config
+  (vertico-mode))
+
+(use-package icomplete
+  :custom
+  (read-file-name-completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (completion-ignore-case t)
+
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles basic partial-completion))))
+
+  (completion-group t)
+  (completions-group-format
+   (concat
+    (propertize "    " 'face 'completions-group-separator)
+    (propertize " %s " 'face 'completions-group-title)
+    (propertize " " 'face 'completions-group-separator
+                'display '(space :align-to right)))))
+
+(use-package orderless
+  :demand t
+  :custom
+  (completion-styles '(orderless))
+  :config
+  (defun prefix-if-tilde (pattern _index _total)
+   (when (string-suffix-p "~" pattern)
+    `(orderless-prefixes . ,(substring pattern 0 -1))))
+
+  (defun regexp-if-slash (pattern _index _total)
+   (when (string-prefix-p "/" pattern)
+    `(orderless-regexp . ,(substring pattern 1))))
+
+  (defun literal-if-equal (pattern _index _total)
+   (when (string-suffix-p "=" pattern)
+     `(orderless-literal . ,(substring pattern 0 -1))))
+
+  (defun without-if-bang (pattern _index _total)
+    (cond
+     ((equal "!" pattern)
+      '(orderless-literal . ""))
+     ((string-prefix-p "!" pattern)
+      `(orderless-without-literal . ,(substring pattern 1)))))
+
+  (setq orderless-matching-styles '(orderless-flex))
+  (setq orderless-style-dispatchers
+        '(prefix-if-tilde
+          regexp-if-slash
+          literal-if-equal
+          without-if-bang)))
+
+(use-package marginalia
+  :defer 1
+  :config
+  (marginalia-mode 1))
+
+(use-package consult
+  :defer 1
+  :after evil-leader projectile
+  :config
+  (evil-leader/set-key
+    "ff" 'consult-find
+    "fb" 'consult-buffer
+    "fg" 'consult-ripgrep)
+  :custom
+  (consult-project-root-function #'projectile-project-root)
+  (consult-narrow-key "<"))
 
 (use-package vterm)

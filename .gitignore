@@ -2,3 +2,6 @@
 .lsp-session-v1
 auto-save-list
 straight
+/history
+/projectile-bookmarks.eld
+/projectile.cache
