@@ -20,6 +20,10 @@
 (global-display-line-numbers-mode)
 (set-frame-font "monospace 9" nil t)
 
+(when (member "Segoe UI Emoji" (font-family-list))
+  (set-fontset-font
+    t 'symbol (font-spec :family "Segoe UI Emoji") nil 'prepend))
+
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
