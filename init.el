@@ -73,6 +73,10 @@
   (setq evil-want-keybinding nil
         evil-want-C-u-scroll t))
 
+(use-package goto-chg
+  :after evil
+  :ensure t)
+
 (use-package evil-leader
   :after evil
   :config
