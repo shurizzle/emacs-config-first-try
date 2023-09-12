@@ -81,6 +81,7 @@
   (evil-mode t))
 
 (use-package evil-collection
+  :ensure t
   :after evil-leader
   :custom
   (evil-collection-setup-minibuffer t)
@@ -114,6 +115,12 @@
             (evil-textobj-tree-sitter-get-textobj "class.outer"))
   (define-key evil-inner-text-objects-map "c"
             (evil-textobj-tree-sitter-get-textobj "class.inner")))
+
+(use-package evil-nerd-commenter
+  :ensure t
+  :after evil-leader
+  :config
+  (evil-leader/set-key "c/" 'evilnc-comment-or-uncomment-lines))
 
 (use-package scala-mode
   :interpreter ("scala3" . scala-mode))
