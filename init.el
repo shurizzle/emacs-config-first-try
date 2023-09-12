@@ -305,4 +305,9 @@ Given my git projects directory ROOT, with a layout like =git/{hub,lab}/<user>/p
   (consult-project-root-function #'projectile-project-root)
   (consult-narrow-key "<"))
 
+(use-package neotree
+  :ensure t
+  :config
+  (evil-define-key '(normal visual) 'global (kbd "SPC e") 'neotree-toggle))
+
 (use-package vterm)
