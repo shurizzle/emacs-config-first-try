@@ -79,10 +79,18 @@
 
 (use-package evil-leader
   :after evil
+  :ensure t
   :config
   (global-evil-leader-mode)
   (evil-leader/set-leader ",")
-  (evil-mode t))
+  (evil-mode t)
+  (evil-define-key '(normal) 'global (kbd "C-n") 'evil-next-buffer)
+  (evil-define-key '(normal) 'global (kbd "C-p") 'evil-prev-buffer)
+  (evil-define-key '(normal) 'global (kbd "C-h") 'evil-window-left)
+  (evil-define-key '(normal) 'global (kbd "C-j") 'evil-window-down)
+  (evil-define-key '(normal) 'global (kbd "C-k") 'evil-window-up)
+  (evil-define-key '(normal) 'global (kbd "C-l") 'evil-window-right)
+  (evil-leader/set-key (kbd ",") 'evil-repeat-find-char-reverse))
 
 (use-package evil-collection
   :ensure t
