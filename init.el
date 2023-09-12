@@ -20,7 +20,9 @@
       display-line-numbers-type 'relative
       magit-last-seen-setup-instructions "1.4.0"
       backup-directory-alist `((".*" . ,temporary-file-directory))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+      package-enable-at-startup nil
+      straight-use-package-by-default t)
 
 (global-display-line-numbers-mode)
 (set-frame-font "monospace 9" nil t)
@@ -41,9 +43,6 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-(setq package-enable-at-startup nil
-      straight-use-package-by-default t)
 
 (eval-and-compile
   (require 'straight))
@@ -94,7 +93,7 @@
   :ensure t
   :after evil-leader
   :config
-  (global-evil-surround-mode 1))
+  (global-evil-surround-mode t))
 
 (use-package evil-numbers
   :ensure t
@@ -289,12 +288,12 @@ Given my git projects directory ROOT, with a layout like =git/{hub,lab}/<user>/p
           without-if-bang)))
 
 (use-package marginalia
-  :defer 1
+  :defer t
   :config
-  (marginalia-mode 1))
+  (marginalia-mode t))
 
 (use-package consult
-  :defer 1
+  :ensure t
   :after evil-leader projectile
   :config
   (evil-leader/set-key
