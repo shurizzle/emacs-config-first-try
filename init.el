@@ -183,23 +183,25 @@
         (text-mode . yas-minor-mode))
 
 (use-package company
-  :hook (scala-mode . company-mode)
-        (rustic-mode . company-mode)
-  :config (setq lsp-completion-provider :capf
-                company-selection-wrap-around t)
-  :bind (:map company-active-map
-              ("<tab>" . 'company-select-next)
-              ("<backtab>" . 'company-select-previous)
-         :map company-mode-map
-              ("C-SPC" . 'company-indent-or-complete-common)))
-
-(use-package tree-sitter
+  :hook
+  (scala-mode . company-mode)
+  (rustic-mode . company-mode)
   :config
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (setq lsp-completion-provider :capf
+        company-selection-wrap-around t)
+  :bind
+  (:map company-active-map
+        ("<tab>" . 'company-select-next)
+        ("<backtab>" . 'company-select-previous)
+   :map company-mode-map
+        ("C-SPC" . 'company-indent-or-complete-common)))
 
-(use-package tree-sitter-langs
-  :after tree-sitter)
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install t)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (defun me/expand-git-project-dirs (root)
   "Return a list of all project directories 2 levels deep in ROOT.
